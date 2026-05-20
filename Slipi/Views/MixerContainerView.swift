@@ -12,7 +12,7 @@ struct MixerContainerView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Audio Mixer")
+                Text("Audio Mixer Tes")
                     .font(.title2).bold()
                 Spacer()
                 Button(action: { engine.togglePlayPause() }) {
