@@ -23,6 +23,7 @@ struct ContentView: View {
             Text("Tes Halo")
             Text("Sleepey")
             Text("Jakarta Barat")
+	        Text("swiftui preview")
         }
     }
 }
