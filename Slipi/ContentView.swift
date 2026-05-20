@@ -23,7 +23,10 @@ struct ContentView: View {
             Text("Tes Halo")
             Text("Sleepey")
             Text("Jakarta Barat")
+	        Text("sasha love hot dogs")
+    	        .font(Font.largeTitle)
         }
+
     }
 }
 
