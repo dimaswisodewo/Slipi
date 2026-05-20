@@ -19,7 +19,9 @@ struct ContentView: View {
     }
     
     private var content: some View {
-        MixerContainerView()
+        VStack {
+            Text("Tes Halo")
+        }
     }
 }
 
