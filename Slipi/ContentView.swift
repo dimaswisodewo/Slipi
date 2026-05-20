@@ -21,6 +21,8 @@ struct ContentView: View {
     private var content: some View {
         VStack {
             Text("Tes Halo")
+            Text("Sleepey")
+            Text("Jakarta Barat")
         }
     }
 }
