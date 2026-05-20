@@ -24,6 +24,7 @@ struct ContentView: View {
             Text("Sleepey")
             Text("Jakarta Barat")
 	        Text("swiftui preview")
+	        Text("swiftui")
         }
     }
 }
