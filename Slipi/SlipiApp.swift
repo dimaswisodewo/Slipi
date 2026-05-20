@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct SlipiApp: App {
+    @State private var router = NavigationRouter()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(router)
         }
     }
 }

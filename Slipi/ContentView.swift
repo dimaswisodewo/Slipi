@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(NavigationRouter.self) private var router
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        @Bindable var routerBindable = router
+        NavigationStack(path: $routerBindable.path) {
+            content
+                .withAppRouter()
         }
-        .padding()
+    }
+    
+    private var content: some View {
+        MixerContainerView()
     }
 }
 
 #Preview {
     ContentView()
+        .environment(NavigationRouter())
 }
