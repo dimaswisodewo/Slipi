@@ -8,6 +8,8 @@ import AVFoundation
 import Combine
 
 class MixerEngine: ObservableObject {
+    static let shared = MixerEngine()
+    
     private let audioEngine = AVAudioEngine()
     private let mainMixer = AVAudioMixerNode()
     
@@ -15,7 +17,7 @@ class MixerEngine: ObservableObject {
     @Published var tracks: [TrackChannel] = []
     @Published var isPlaying = false
     
-    init() {
+    private init() {
         audioEngine.attach(mainMixer)
         audioEngine.connect(mainMixer, to: audioEngine.mainMixerNode, format: nil)
         

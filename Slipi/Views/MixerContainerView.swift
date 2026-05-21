@@ -7,7 +7,7 @@ import SwiftUI
 
 struct MixerContainerView: View {
     @Environment(NavigationRouter.self) private var router
-    @StateObject private var engine = MixerEngine()
+    @ObservedObject private var engine = MixerEngine.shared
     
     var body: some View {
         VStack {
@@ -36,15 +36,17 @@ struct MixerContainerView: View {
             Spacer()
         }
         .onAppear {
-            // Load local wav bundles
-            engine.loadLocalManifest([
-                "Dry Leaves": "dry-leaves",
-                "Fish Moving": "fish-moving",
-                "Light Rain": "light-rain",
-                "Thunder Strike": "thunder-strike",
-                "Water Flowing": "water-flowing",
-                "Wind Blowing": "wind-blowing"
-            ])
+            // Load local wav bundles if not already loaded
+            if engine.tracks.isEmpty {
+                engine.loadLocalManifest([
+                    "Dry Leaves": "dry-leaves",
+                    "Fish Moving": "fish-moving",
+                    "Light Rain": "light-rain",
+                    "Thunder Strike": "thunder-strike",
+                    "Water Flowing": "water-flowing",
+                    "Wind Blowing": "wind-blowing"
+                ])
+            }
         }
     }
 }
