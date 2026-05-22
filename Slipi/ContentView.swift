@@ -20,6 +20,7 @@ struct ContentView: View {
     
     private var content: some View {
         MixerContainerView()
+            .navigationBarTitle("Slipi Jaya")
     }
 }
 
