@@ -32,7 +32,10 @@ struct ChannelListItemView: View {
 
 #Preview {
     if let fileURL = Bundle.main.url(forResource: "dry-leaves", withExtension: "wav"),
-       let track = try? TrackChannel(name: "Test Track", fileURL: fileURL) {
+       let track = try? TrackChannel(
+        track: AvailableTrack(name: "Test Track", fileName: "dry-leaves", iconName: "play"),
+        fileURL: fileURL
+       ) {
         ChannelListItemView(track: track, openSettings: {})
             .padding()
     } else {

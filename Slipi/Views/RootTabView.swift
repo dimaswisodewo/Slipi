@@ -7,12 +7,13 @@ import SwiftUI
 
 struct RootTabView: View {
     @Environment(NavigationRouter.self) private var router
+    private let mixer = MixerEngine.shared
     
     var body: some View {
         @Bindable var routerBindable = router
         
         VStack(spacing: 0) {
-            ZStack {
+            ZStack(alignment: .bottom) {
                 ForEach(AppTab.allCases) { tab in
                     NavigationStack(path: $routerBindable.paths[tab] ?? .constant([])) {
                         tabContentView(for: tab)
@@ -21,6 +22,8 @@ struct RootTabView: View {
                     .opacity(router.selectedTab == tab ? 1 : 0)
                     .allowsHitTesting(router.selectedTab == tab)
                 }
+                
+                FloatingMiniPlayerView(mixer: mixer)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             

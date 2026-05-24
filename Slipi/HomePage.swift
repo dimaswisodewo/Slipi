@@ -10,15 +10,23 @@ import SwiftUI
 // MARK: - Models
  
 struct SoundItem: Identifiable {
-    let id = UUID()
+    let id: String
     let name: String
     let icon: String // SF Symbol name
-    let fileName: String?
+    let track: AvailableTrack?
     
-    init(name: String, icon: String, fileName: String? = nil) {
+    init(name: String, icon: String, track: AvailableTrack? = nil) {
+        self.id = track?.id ?? name
         self.name = name
         self.icon = icon
-        self.fileName = fileName
+        self.track = track
+    }
+
+    init(track: AvailableTrack, name: String? = nil, icon: String? = nil) {
+        self.id = track.id
+        self.name = name ?? track.name
+        self.icon = icon ?? track.iconName
+        self.track = track
     }
 }
  
@@ -32,21 +40,21 @@ struct SoundCategory: Identifiable {
  
 let sampleCategories: [SoundCategory] = [
     SoundCategory(name: "Nature", items: [
-        SoundItem(name: "Wind", icon: "wind", fileName: "wind-blowing"),
+        SoundItem(track: .windBlowing, name: "Wind"),
         SoundItem(name: "Campfire", icon: "flame"),
         SoundItem(name: "Bird", icon: "bird"),
-        SoundItem(name: "Thunder", icon: "bolt", fileName: "thunder-strike"),
-        SoundItem(name: "Rain", icon: "cloud.rain", fileName: "light-rain"),
+        SoundItem(track: .thunderStrike, name: "Thunder"),
+        SoundItem(track: .lightRain, name: "Rain"),
         SoundItem(name: "Ocean", icon: "water.waves"),
-        SoundItem(name: "Forest", icon: "tree", fileName: "dry-leaves"),
-        SoundItem(name: "Creek", icon: "drop", fileName: "water-flowing"),
-        SoundItem(name: "Fish", icon: "fish", fileName: "fish-moving")
+        SoundItem(track: .dryLeaves, name: "Forest", icon: "tree"),
+        SoundItem(track: .waterFlowing, name: "Creek"),
+        SoundItem(track: .fishMoving, name: "Fish")
     ]),
     SoundCategory(name: "Weather", items: [
-        SoundItem(name: "Wind", icon: "wind", fileName: "wind-blowing"),
+        SoundItem(track: .windBlowing, name: "Wind"),
         SoundItem(name: "Storm", icon: "cloud.bolt.rain"),
-        SoundItem(name: "Rain", icon: "cloud.drizzle", fileName: "light-rain"),
-        SoundItem(name: "Thunder", icon: "bolt", fileName: "thunder-strike"),
+        SoundItem(track: .lightRain, name: "Rain", icon: "cloud.drizzle"),
+        SoundItem(track: .thunderStrike, name: "Thunder"),
         SoundItem(name: "Snow", icon: "snowflake"),
         SoundItem(name: "Fog", icon: "cloud.fog"),
         SoundItem(name: "Hail", icon: "cloud.hail"),
@@ -76,10 +84,18 @@ struct SoundCardView: View {
     @State private var isPressed = false
  
     private var isActive: Bool {
-        engine.tracks.contains(where: { $0.name == item.name })
+        guard let track = item.track else { return false }
+        return engine.isTrackActive(track)
     }
 
     var body: some View {
+        Button(action: handleTap) {
+            content
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var content: some View {
         VStack(spacing: 8) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
@@ -107,33 +123,34 @@ struct SoundCardView: View {
                     .resizable()
                     .scaledToFit()
                     .padding(22)
-                    .foregroundColor(isActive ? .white : .white.opacity(0.4))
+                    .foregroundStyle(isActive ? .white : .white.opacity(0.4))
                     .fontWeight(.light)
             }
  
             Text(item.name)
                 .font(.system(size: 13, weight: isActive ? .medium : .regular))
-                .foregroundColor(isActive ? .white : .white.opacity(0.6))
+                .foregroundStyle(isActive ? .white : .white.opacity(0.6))
         }
         .scaleEffect(isPressed ? 0.94 : 1.0)
         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
-        .onTapGesture {
+    }
+
+    private func handleTap() {
+        withAnimation {
+            isPressed = true
+        }
+
+        if let track = item.track {
+            if let activeTrack = engine.activeTrack(for: track) {
+                engine.removeTrack(id: activeTrack.id)
+            } else {
+                engine.addTrack(track)
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
             withAnimation {
-                isPressed = true
-            }
-            
-            if isActive {
-                if let track = engine.tracks.first(where: { $0.name == item.name }) {
-                    engine.removeTrack(id: track.id)
-                }
-            } else if let fileName = item.fileName {
-                engine.addTrack(displayName: item.name, fileName: fileName)
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation {
-                    isPressed = false
-                }
+                isPressed = false
             }
         }
     }
