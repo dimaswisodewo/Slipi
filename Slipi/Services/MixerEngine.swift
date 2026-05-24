@@ -46,18 +46,28 @@ class MixerEngine: ObservableObject {
         }
         
         for (displayName, fileName) in manifest {
-            addTrack(displayName: displayName, fileName: fileName)
+            addTrack(.manifestTrack(name: displayName, fileName: fileName))
         }
     }
     
-    func addTrack(displayName: String, fileName: String) {
-        guard let fileURL = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
-            print("Could not find local file: \(fileName).wav")
+    func activeTrack(for track: AvailableTrack) -> TrackChannel? {
+        tracks.first { $0.trackID == track.id }
+    }
+
+    func isTrackActive(_ track: AvailableTrack) -> Bool {
+        activeTrack(for: track) != nil
+    }
+
+    func addTrack(_ track: AvailableTrack) {
+        guard activeTrack(for: track) == nil else { return }
+
+        guard let fileURL = Bundle.main.url(forResource: track.fileName, withExtension: "wav") else {
+            print("Could not find local file: \(track.fileName).wav")
             return
         }
         
         do {
-            let channel = try TrackChannel(name: displayName, fileURL: fileURL)
+            let channel = try TrackChannel(track: track, fileURL: fileURL)
             
             // Attach the nodes to the engine
             audioEngine.attach(channel.playerNode)
@@ -84,7 +94,7 @@ class MixerEngine: ObservableObject {
                 channel.playerNode.play()
             }
         } catch {
-            print("Error initializing track \(displayName): \(error)")
+            print("Error initializing track \(track.name): \(error)")
         }
     }
     

@@ -9,7 +9,9 @@ import Combine
 
 class TrackChannel: ObservableObject, ModelPassable {
     let id = UUID()
+    let trackID: AvailableTrack.ID
     let name: String
+    let iconName: String
     
     // Engine Nodes
     let playerNode = AVAudioPlayerNode()
@@ -25,8 +27,10 @@ class TrackChannel: ObservableObject, ModelPassable {
     @Published var mid: Float = 0.0 { didSet { eqNode.bands[1].gain = mid } }
     @Published var treble: Float = 0.0 { didSet { eqNode.bands[2].gain = treble } }
     
-    init(name: String, fileURL: URL) throws {
-        self.name = name
+    init(track: AvailableTrack, fileURL: URL) throws {
+        self.trackID = track.id
+        self.name = track.name
+        self.iconName = track.iconName
         self.file = try AVAudioFile(forReading: fileURL)
         setupEQBands()
     }
@@ -38,4 +42,3 @@ class TrackChannel: ObservableObject, ModelPassable {
         eqNode.bands.forEach { $0.filterType = .parametric }
     }
 }
-
