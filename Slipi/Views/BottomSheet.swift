@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct BottomSheet: View {
-    @State private var sliderValue: Double = 50.0
+    @State private var rainSliderValue: Double = 50.0
     @State private var windSliderValue: Double = 50.0
     @State private var thunderSliderValue: Double = 50.0
     @State private var showAudioTuning = false
@@ -30,16 +30,33 @@ struct BottomSheet: View {
                     .padding(.top, 40)
                
                 VStack(spacing: 20) {
-                    AudioSliderComponent(sliderValue: $sliderValue) {
+                    AudioSliderComponent(
+                        title: "Rain",
+                        systemImageName: "cloud.rain.fill",
+                        sliderValue: $rainSliderValue
+                        
+                    )  {
                         showAudioTuning = true
                     }
-                    WindSliderComponent(sliderValue: $windSliderValue) {
+                    
+                    AudioSliderComponent(
+                        title: "Wind",
+                        systemImageName: "wind",
+                        sliderValue: $windSliderValue
+                        
+                    ) {
                         showAudioTuning = true
                     }
-                    ThunderSliderComponent(sliderValue: $thunderSliderValue) {
+                    AudioSliderComponent(
+                        title: "Thunder",
+                        systemImageName: "cloud.bolt.rain.fill",
+                        sliderValue: $thunderSliderValue
+                        
+                    ) {
                         showAudioTuning = true
                     }
-                }
+
+                    }
                 .padding(.top, 16)
 
                 Spacer()
