@@ -12,10 +12,18 @@ struct PreviewRouterWrapper<Content: View>: View {
     
     var body: some View {
         @Bindable var routerBindable = router
-        NavigationStack(path: $routerBindable.path) {
+        NavigationStack(path: $routerBindable.paths[.mixer] ?? .constant([])) {
             content()
                 .withAppRouter()
         }
         .environment(router)
     }
+}
+
+// Helper to provide a constant binding for safety
+private func ??<T>(lhs: Binding<T?>, rhs: Binding<T>) -> Binding<T> {
+    Binding(
+        get: { lhs.wrappedValue ?? rhs.wrappedValue },
+        set: { lhs.wrappedValue = $0 }
+    )
 }
