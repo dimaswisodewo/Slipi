@@ -17,10 +17,11 @@ enum AppRoute: Hashable, Identifiable {
 
 @Observable
 class NavigationRouter {
-    var selectedTab: AppTab = .mixer
+    var selectedTab: AppTab = .home
     var paths: [AppTab: [AppRoute]] = [
-        .mixer: [],
-        .settings: []
+        .home: [],
+        .favorites: [],
+        .me: []
     ]
     var presentedSheet: AppRoute?
     var presentedFullScreenCover: AppRoute?

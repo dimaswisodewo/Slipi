@@ -32,20 +32,28 @@ struct RootTabView: View {
     @ViewBuilder
     private func tabContentView(for tab: AppTab) -> some View {
         switch tab {
-        case .mixer:
-            MixerContainerView()
-        case .settings:
-            settingsPlaceholder
+        case .home:
+            HomePage()
+        case .favorites:
+            favoritesPlaceholder
+        case .me:
+            mePlaceholder
         }
     }
-    
-    private var settingsPlaceholder: some View {
+
+    private var favoritesPlaceholder: some View {
         VStack {
-            Text("Settings")
+            Text("Favorites")
         }
-        .navigationTitle("Settings")
+        .navigationTitle("Favorites")
     }
-}
+
+    private var mePlaceholder: some View {
+        VStack {
+            Text("Me")
+        }
+        .navigationTitle("Me")
+    }}
 
 // Helper to provide a constant binding for safety, though paths should always exist for all keys
 private func ??<T>(lhs: Binding<T?>, rhs: Binding<T>) -> Binding<T> {

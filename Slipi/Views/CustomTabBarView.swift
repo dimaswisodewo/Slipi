@@ -9,21 +9,24 @@ struct CustomTabBarView: View {
     @Environment(NavigationRouter.self) private var router
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack {
+            Spacer()
             ForEach(AppTab.allCases) { tab in
                 tabItem(for: tab)
+                Spacer()
             }
         }
-        .padding(.top, 12)
-        .padding(.bottom, 24) // Extra padding for home indicator
-        .background {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .ignoresSafeArea()
-                .overlay(alignment: .top) {
-                    Divider()
-                }
-        }
+        .padding(.vertical, 12)
+        .background(
+            Color.brandBackground
+                .ignoresSafeArea(edges: .bottom)
+                .overlay(
+                    Rectangle()
+                        .frame(height: 0.5)
+                        .foregroundColor(.white.opacity(0.1)),
+                    alignment: .top
+                )
+        )
     }
     
     private func tabItem(for tab: AppTab) -> some View {
@@ -38,13 +41,12 @@ struct CustomTabBarView: View {
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: isSelected ? tab.icon : tab.icon.replacingOccurrences(of: ".fill", with: ""))
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 22))
                 
                 Text(tab.title)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.system(size: 11))
             }
-            .foregroundColor(isSelected ? .accentColor : .secondary)
-            .frame(maxWidth: .infinity)
+            .foregroundColor(isSelected ? .brandOrange : .white.opacity(0.5))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

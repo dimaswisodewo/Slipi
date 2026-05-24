@@ -6,22 +6,25 @@
 import Foundation
 
 enum AppTab: String, CaseIterable, Identifiable, Hashable {
-    case mixer
-    case settings
+    case home
+    case favorites
+    case me
     
     var id: String { rawValue }
     
     var title: String {
         switch self {
-        case .mixer: return "Mixer"
-        case .settings: return "Settings"
+        case .home: return "Home"
+        case .favorites: return "Favorites"
+        case .me: return "Me"
         }
     }
     
     var icon: String {
         switch self {
-        case .mixer: return "slider.horizontal.3"
-        case .settings: return "gearshape.fill"
+        case .home: return "music.note.house.fill"
+        case .favorites: return "heart.fill"
+        case .me: return "person.fill"
         }
     }
 }

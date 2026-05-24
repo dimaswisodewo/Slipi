@@ -40,5 +40,10 @@ extension Color {
     static let customBrightOrange = Color(hex: "CA3F16")
     static let customBurntOrange = Color(hex: "BC3B15")
     static let customDeepBrown = Color(hex: "5F2514")
+
+    static let brandOrange = Color(red: 0.85, green: 0.33, blue: 0.08)
+    static let brandOrangeDark = Color(red: 0.55, green: 0.18, blue: 0.03)
+    static let brandBackground = Color(red: 0.07, green: 0.05, blue: 0.04)
+    static let cardBackground = Color(red: 0.16, green: 0.08, blue: 0.03)
 }
 
