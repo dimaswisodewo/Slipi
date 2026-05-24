@@ -50,13 +50,16 @@ struct CardMusicView: View {
                 
                 ZStack {
                     ForEach(images.indices.reversed(), id: \.self) { index in
-                        Image(images[index])
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: imageSize)
-                            .offset(
-                                x: CGFloat(index) * overlapOffset - CGFloat(images.count - 1) * overlapOffset / 2
-                            )
+                        
+                        CircleIcon(
+                            icon: .system(images[index]),
+                            size: imageSize
+                        )
+                        .offset(
+                            x: CGFloat(index) * overlapOffset
+                            - CGFloat(images.count - 1) * overlapOffset / 2
+                        )
+                        .zIndex(Double(images.count - index))
                     }
                 }
                 .frame(
@@ -282,7 +285,7 @@ struct CardMusicView: View {
     CardMusicView(
         title: "Rainy Day",
         items: 3,
-        images: ["windIcon","flameIcon","birdIcon"],
+        images: ["wind","flame","bird"],
         onClickAction: {}
     )
 }

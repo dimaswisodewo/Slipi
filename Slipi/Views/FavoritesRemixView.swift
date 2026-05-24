@@ -11,10 +11,16 @@ struct FavoritesRemixView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(stops: [
-                .init(color: .orange, location: 0.0),
-                .init(color: .black, location: 0.35),
-            ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(
+                colors: [
+                    Color(hex: "642816"),
+                    .black,
+                    .black,
+                ],
+                startPoint: UnitPoint(x: -0.4, y: 0.3),
+                endPoint: UnitPoint(x: 0.6, y: 0.9)
+            )
+            .ignoresSafeArea()
 
             
             ScrollView(showsIndicators: false) {
@@ -40,23 +46,24 @@ struct FavoritesRemixView: View {
                         CardMusicView(
                             title: "Rainy Day",
                             items: 3,
-                            images:["windIcon","flameIcon","birdIcon"],
+                            images:["wind","flame","bird"],
                             onClickAction: {}
                         )
                         
                         CardMusicView(
                             title: "Deep Focus",
                             items: 2,
-                            images:["windIcon", "birdIcon"],
+                            images:["wind","bird"],
                             onClickAction: {}
                         )
                         
                         CardMusicView(
                             title: "Calming Wind Blow",
                             items: 1,
-                            images:["windIcon"],
+                            images:["wind"],
                             onClickAction: {}
                         )
+
                     }
                 }
                 .padding(.horizontal, 24)
