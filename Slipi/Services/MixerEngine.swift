@@ -61,8 +61,9 @@ class MixerEngine: ObservableObject {
     func addTrack(_ track: AvailableTrack) {
         guard activeTrack(for: track) == nil else { return }
 
-        guard let fileURL = Bundle.main.url(forResource: track.fileName, withExtension: "wav") else {
-            print("Could not find local file: \(track.fileName).wav")
+        guard let fileURL = Bundle.main.url(forResource: track.fileName, withExtension: "wav") ??
+                            Bundle.main.url(forResource: track.fileName, withExtension: "mp3") else {
+            print("Could not find local file: \(track.fileName).wav or .mp3")
             return
         }
         
