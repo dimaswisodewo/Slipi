@@ -17,22 +17,26 @@ enum AppRoute: Hashable, Identifiable {
 
 @Observable
 class NavigationRouter {
-    var path = [AppRoute]()
+    var selectedTab: AppTab = .mixer
+    var paths: [AppTab: [AppRoute]] = [
+        .mixer: [],
+        .settings: []
+    ]
     var presentedSheet: AppRoute?
     var presentedFullScreenCover: AppRoute?
     
     func push(_ route: AppRoute) {
-        path.append(route)
+        paths[selectedTab]?.append(route)
     }
     
     func pop() {
-        if !path.isEmpty {
-            path.removeLast()
+        if let currentPath = paths[selectedTab], !currentPath.isEmpty {
+            paths[selectedTab]?.removeLast()
         }
     }
     
     func popToRoot() {
-        path.removeAll()
+        paths[selectedTab]?.removeAll()
     }
     
     func presentSheet(_ route: AppRoute) {

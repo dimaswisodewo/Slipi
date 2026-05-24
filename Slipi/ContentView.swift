@@ -11,16 +11,7 @@ struct ContentView: View {
     @Environment(NavigationRouter.self) private var router
     
     var body: some View {
-        @Bindable var routerBindable = router
-        NavigationStack(path: $routerBindable.path) {
-            content
-                .withAppRouter()
-        }
-    }
-    
-    private var content: some View {
-        MixerContainerView()
-            .navigationBarTitle("Slipi Jaya")
+        RootTabView()
     }
 }
 
