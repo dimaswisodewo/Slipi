@@ -60,13 +60,6 @@ let filterTabs = ["Nature", "Weather", "Brainwaves", "Colored Noise", "ASMR"]
  
 // MARK: - Color Theme
  
-extension Color {
-    static let brandOrange = Color(red: 0.85, green: 0.33, blue: 0.08)
-    static let brandOrangeDark = Color(red: 0.55, green: 0.18, blue: 0.03)
-    static let brandBackground = Color(red: 0.07, green: 0.05, blue: 0.04)
-    static let cardBackground = Color(red: 0.16, green: 0.08, blue: 0.03)
-}
- 
 // MARK: - Sound Card View
  
 struct SoundCardView: View {
@@ -252,60 +245,9 @@ struct HomePage: View {
                         Spacer().frame(height: 90)
                     }
                 }
- 
-                // MARK: Tab Bar
-                HStack {
-                    Spacer()
-                    TabBarButton(icon: "music.note.house.fill", label: "Home", isSelected: selectedNavTab == 0) {
-                        selectedNavTab = 0
-                    }
-                    Spacer()
-                    TabBarButton(icon: "heart", label: "Favorites", isSelected: selectedNavTab == 1) {
-                        selectedNavTab = 1
-                    }
-                    Spacer()
-                    TabBarButton(icon: "person", label: "Me", isSelected: selectedNavTab == 2) {
-                        selectedNavTab = 2
-                    }
-                    Spacer()
-                }
-                .padding(.vertical, 12)
-                .background(
-                    Color.black.opacity(0.85)
-                        .ignoresSafeArea(edges: .bottom)
-                        .overlay(
-                            Rectangle()
-                                .frame(height: 0.5)
-                                .foregroundColor(.white.opacity(0.1)),
-                            alignment: .top
-                        )
-                )
             }
         }
         .preferredColorScheme(.dark)
-    }
-}
- 
-// MARK: - Tab Bar Button
- 
-struct TabBarButton: View {
-    let icon: String
-    let label: String
-    let isSelected: Bool
-    let action: () -> Void
- 
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 22))
-                    .foregroundColor(isSelected ? Color.brandOrange : .white.opacity(0.5))
-                Text(label)
-                    .font(.system(size: 11))
-                    .foregroundColor(isSelected ? Color.brandOrange : .white.opacity(0.5))
-            }
-        }
-        .buttonStyle(.plain)
     }
 }
  

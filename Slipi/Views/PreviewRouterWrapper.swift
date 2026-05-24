@@ -12,7 +12,7 @@ struct PreviewRouterWrapper<Content: View>: View {
     
     var body: some View {
         @Bindable var routerBindable = router
-        NavigationStack(path: $routerBindable.paths[.mixer] ?? .constant([])) {
+        NavigationStack(path: $routerBindable.paths[.home] ?? .constant([])) {
             content()
                 .withAppRouter()
         }
