@@ -58,9 +58,28 @@ private struct CircleIconButtonStyle: ButtonStyle {
     }
 }
 
-#Preview {
-    ZStack {
-        Color.black.ignoresSafeArea()
-        PlayPauseComponent()
+struct syukron: View {
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color(hex: "642816"),
+                    .black,
+                    .black,
+                ],
+                startPoint: UnitPoint(x: -0.4, y: 0.3),
+                endPoint: UnitPoint(x: 0.6, y: 0.9)
+            )
+            .ignoresSafeArea()
+
+            BottomSheet()
+        }
     }
+}
+#Preview {
+    syukron()
+//    ZStack {
+//        Color.black.ignoresSafeArea()
+//        PlayPauseComponent()
+   // }
 }
