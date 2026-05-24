@@ -31,9 +31,11 @@ struct ChannelListItemView: View {
 }
 
 #Preview {
-    ChannelListItemView(
-        track: try! TrackChannel(name: "Test Track", fileURL: Bundle.main.url(forResource: "dry-leaves", withExtension: "wav")!),
-        openSettings: {}
-    )
-    .padding()
+    if let fileURL = Bundle.main.url(forResource: "dry-leaves", withExtension: "wav"),
+       let track = try? TrackChannel(name: "Test Track", fileURL: fileURL) {
+        ChannelListItemView(track: track, openSettings: {})
+            .padding()
+    } else {
+        ContentUnavailableView("Preview audio file missing", systemImage: "waveform.slash")
+    }
 }
