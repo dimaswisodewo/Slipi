@@ -13,6 +13,13 @@ struct SoundItem: Identifiable {
     let id = UUID()
     let name: String
     let icon: String // SF Symbol name
+    let fileName: String?
+    
+    init(name: String, icon: String, fileName: String? = nil) {
+        self.name = name
+        self.icon = icon
+        self.fileName = fileName
+    }
 }
  
 struct SoundCategory: Identifiable {
@@ -25,20 +32,21 @@ struct SoundCategory: Identifiable {
  
 let sampleCategories: [SoundCategory] = [
     SoundCategory(name: "Nature", items: [
-        SoundItem(name: "Wind", icon: "wind"),
+        SoundItem(name: "Wind", icon: "wind", fileName: "wind-blowing"),
         SoundItem(name: "Campfire", icon: "flame"),
         SoundItem(name: "Bird", icon: "bird"),
-        SoundItem(name: "Thunder", icon: "bolt"),
-        SoundItem(name: "Rain", icon: "cloud.rain"),
+        SoundItem(name: "Thunder", icon: "bolt", fileName: "thunder-strike"),
+        SoundItem(name: "Rain", icon: "cloud.rain", fileName: "light-rain"),
         SoundItem(name: "Ocean", icon: "water.waves"),
-        SoundItem(name: "Forest", icon: "tree"),
-        SoundItem(name: "Creek", icon: "drop")
+        SoundItem(name: "Forest", icon: "tree", fileName: "dry-leaves"),
+        SoundItem(name: "Creek", icon: "drop", fileName: "water-flowing"),
+        SoundItem(name: "Fish", icon: "fish", fileName: "fish-moving")
     ]),
     SoundCategory(name: "Weather", items: [
-        SoundItem(name: "Wind", icon: "wind"),
+        SoundItem(name: "Wind", icon: "wind", fileName: "wind-blowing"),
         SoundItem(name: "Storm", icon: "cloud.bolt.rain"),
-        SoundItem(name: "Rain", icon: "cloud.drizzle"),
-        SoundItem(name: "Thunder", icon: "bolt"),
+        SoundItem(name: "Rain", icon: "cloud.drizzle", fileName: "light-rain"),
+        SoundItem(name: "Thunder", icon: "bolt", fileName: "thunder-strike"),
         SoundItem(name: "Snow", icon: "snowflake"),
         SoundItem(name: "Fog", icon: "cloud.fog"),
         SoundItem(name: "Hail", icon: "cloud.hail"),
@@ -64,33 +72,48 @@ let filterTabs = ["Nature", "Weather", "Brainwaves", "Colored Noise", "ASMR"]
  
 struct SoundCardView: View {
     let item: SoundItem
+    @ObservedObject private var engine = MixerEngine.shared
     @State private var isPressed = false
  
+    private var isActive: Bool {
+        engine.tracks.contains(where: { $0.name == item.name })
+    }
+
     var body: some View {
         VStack(spacing: 8) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(
+                        isActive ?
                         LinearGradient(
                             colors: [Color.brandOrange, Color.brandOrangeDark],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ) :
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.1), Color.white.opacity(0.05)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
                     .aspectRatio(1, contentMode: .fit)
-                    .shadow(color: Color.brandOrange.opacity(0.4), radius: 8, x: 0, y: 4)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.white.opacity(isActive ? 0.8 : 0), lineWidth: 2)
+                    )
+                    .shadow(color: isActive ? Color.brandOrange.opacity(0.4) : Color.clear, radius: 8, x: 0, y: 4)
  
                 Image(systemName: item.icon)
                     .resizable()
                     .scaledToFit()
                     .padding(22)
-                    .foregroundColor(.white)
+                    .foregroundColor(isActive ? .white : .white.opacity(0.4))
                     .fontWeight(.light)
             }
  
             Text(item.name)
-                .font(.system(size: 13, weight: .regular))
-                .foregroundColor(.white.opacity(0.9))
+                .font(.system(size: 13, weight: isActive ? .medium : .regular))
+                .foregroundColor(isActive ? .white : .white.opacity(0.6))
         }
         .scaleEffect(isPressed ? 0.94 : 1.0)
         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
@@ -98,6 +121,15 @@ struct SoundCardView: View {
             withAnimation {
                 isPressed = true
             }
+            
+            if isActive {
+                if let track = engine.tracks.first(where: { $0.name == item.name }) {
+                    engine.removeTrack(id: track.id)
+                }
+            } else if let fileName = item.fileName {
+                engine.addTrack(displayName: item.name, fileName: fileName)
+            }
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 withAnimation {
                     isPressed = false

@@ -76,8 +76,11 @@ class MixerEngine: ObservableObject {
             // Always schedule the file so it's ready in the buffer
             scheduleLoop(channel)
             
-            // If already playing, start this track
-            if isPlaying {
+            // Autoplay when a track is added
+            if !isPlaying {
+                isPlaying = true
+                tracks.forEach { $0.playerNode.play() }
+            } else {
                 channel.playerNode.play()
             }
         } catch {
@@ -99,6 +102,10 @@ class MixerEngine: ObservableObject {
         audioEngine.detach(channel.playerNode)
         audioEngine.detach(channel.eqNode)
         audioEngine.detach(channel.speedNode)
+        
+        if tracks.isEmpty {
+            isPlaying = false
+        }
     }
     
     private func scheduleLoop(_ channel: TrackChannel) {
