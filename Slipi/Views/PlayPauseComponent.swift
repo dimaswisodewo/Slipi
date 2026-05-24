@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PlayPauseComponent: View {
+    @ObservedObject var mixer: MixerEngine
     @State private var isFavorite = false
-    @State private var isPlaying = false
 
     var body: some View {
         HStack(spacing: 24) {
@@ -22,9 +22,9 @@ struct PlayPauseComponent: View {
             .buttonStyle(CircleIconButtonStyle())
 
             Button {
-                isPlaying.toggle()
+                mixer.togglePlayPause()
             } label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                Image(systemName: mixer.isPlaying ? "pause.fill" : "play.fill")
                     .font(.system(size: 28, weight: .semibold))
             }
             .buttonStyle(CircleIconButtonStyle(size: 72))
@@ -58,28 +58,9 @@ private struct CircleIconButtonStyle: ButtonStyle {
     }
 }
 
-struct syukron: View {
-    var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    Color(hex: "642816"),
-                    .black,
-                    .black,
-                ],
-                startPoint: UnitPoint(x: -0.4, y: 0.3),
-                endPoint: UnitPoint(x: 0.6, y: 0.9)
-            )
-            .ignoresSafeArea()
-
-            BottomSheet()
-        }
-    }
-}
 #Preview {
-    syukron()
-//    ZStack {
-//        Color.black.ignoresSafeArea()
-//        PlayPauseComponent()
-   // }
+    ZStack {
+        Color.black.ignoresSafeArea()
+        PlayPauseComponent(mixer: .shared)
+    }
 }

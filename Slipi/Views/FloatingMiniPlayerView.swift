@@ -7,6 +7,7 @@ import SwiftUI
 
 struct FloatingMiniPlayerView: View {
     @ObservedObject var mixer: MixerEngine
+    @State private var isShowingPlayerSheet = false
 
     private let imageSize: CGFloat = 35
     private let maxImages = 3
@@ -19,19 +20,17 @@ struct FloatingMiniPlayerView: View {
     var body: some View {
         if !mixer.tracks.isEmpty {
             HStack(spacing: 12) {
-                iconStack
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Current Mix")
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.white)
-
-                    Text(mixer.tracks.count == 1 ? "1 Item Mixed" : "\(mixer.tracks.count) Items Mixed")
-                        .font(.subheadline.weight(.light))
-                        .foregroundStyle(.white.opacity(0.8))
+                Button {
+                    isShowingPlayerSheet = true
+                } label: {
+                    HStack(spacing: 12) {
+                        iconStack
+                        titleStack
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
                 }
-
-                Spacer()
+                .buttonStyle(.plain)
 
                 Button(action: mixer.togglePlayPause) {
                     Image(systemName: mixer.isPlaying ? "pause.fill" : "play.fill")
@@ -54,6 +53,21 @@ struct FloatingMiniPlayerView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
             .transition(.move(edge: .bottom).combined(with: .opacity))
+            .sheet(isPresented: $isShowingPlayerSheet) {
+                MixerBottomSheet(mixer: mixer)
+            }
+        }
+    }
+
+    private var titleStack: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("Current Mix")
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.white)
+
+            Text(mixer.tracks.count == 1 ? "1 Item Mixed" : "\(mixer.tracks.count) Items Mixed")
+                .font(.subheadline.weight(.light))
+                .foregroundStyle(.white.opacity(0.8))
         }
     }
 
