@@ -72,7 +72,7 @@ let sampleCategories: [SoundCategory] = [
     ])
 ]
  
-let filterTabs = ["Nature", "Weather", "Brainwaves", "Colored Noise", "ASMR"]
+let filterTabs = ["All"] + sampleCategories.map(\.name)
  
 // MARK: - Color Theme
  
@@ -211,9 +211,48 @@ struct FilterTabView: View {
 // MARK: - Main Content View
  
 struct HomePage: View {
+    private static let searchDebounceDelay: Duration = .milliseconds(300)
+
     @State private var searchText = ""
-    @State private var selectedTab = "Nature"
+    @State private var debouncedSearchText = ""
+    @State private var searchDebounceTask: Task<Void, Never>?
+    @State private var selectedTab = "All"
     @State private var selectedNavTab = 0
+
+    private var filteredCategories: [SoundCategory] {
+        let tabFilteredCategories = selectedTab == "All"
+            ? sampleCategories
+            : sampleCategories.filter { $0.name == selectedTab }
+
+        let query = debouncedSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return tabFilteredCategories }
+
+        return tabFilteredCategories.compactMap { category in
+            if category.name.localizedStandardContains(query) {
+                return category
+            }
+
+            let matchingItems = category.items.filter {
+                $0.name.localizedStandardContains(query)
+            }
+
+            guard !matchingItems.isEmpty else { return nil }
+            return SoundCategory(name: category.name, items: matchingItems)
+        }
+    }
+
+    private func debounceSearch(_ newValue: String) {
+        searchDebounceTask?.cancel()
+        searchDebounceTask = Task {
+            try? await Task.sleep(for: Self.searchDebounceDelay)
+
+            guard !Task.isCancelled else { return }
+
+            await MainActor.run {
+                debouncedSearchText = newValue
+            }
+        }
+    }
  
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -286,7 +325,7 @@ struct HomePage: View {
                         }
  
                         // MARK: Category Sections
-                        ForEach(sampleCategories) { category in
+                        ForEach(filteredCategories) { category in
                             CategorySectionView(category: category)
                         }
  
@@ -297,6 +336,12 @@ struct HomePage: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onChange(of: searchText) { _, newValue in
+            debounceSearch(newValue)
+        }
+        .onDisappear {
+            searchDebounceTask?.cancel()
+        }
     }
 }
  
