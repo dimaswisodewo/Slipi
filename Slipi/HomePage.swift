@@ -72,7 +72,7 @@ let sampleCategories: [SoundCategory] = [
     ])
 ]
  
-let filterTabs = ["Nature", "Weather", "Brainwaves", "Colored Noise", "ASMR"]
+let filterTabs = ["All"] + sampleCategories.map(\.name)
  
 // MARK: - Color Theme
  
@@ -212,8 +212,13 @@ struct FilterTabView: View {
  
 struct HomePage: View {
     @State private var searchText = ""
-    @State private var selectedTab = "Nature"
+    @State private var selectedTab = "All"
     @State private var selectedNavTab = 0
+
+    private var filteredCategories: [SoundCategory] {
+        guard selectedTab != "All" else { return sampleCategories }
+        return sampleCategories.filter { $0.name == selectedTab }
+    }
  
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -286,7 +291,7 @@ struct HomePage: View {
                         }
  
                         // MARK: Category Sections
-                        ForEach(sampleCategories) { category in
+                        ForEach(filteredCategories) { category in
                             CategorySectionView(category: category)
                         }
  
