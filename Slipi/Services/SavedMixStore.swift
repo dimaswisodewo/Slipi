@@ -91,14 +91,24 @@ struct SavedMixSnapshot {
     let tracks: [SavedMixTrackSnapshot]
 
     var title: String {
-        let names = tracks.prefix(2).map(\.name)
+        let names = tracks.prefix(3).map(\.name)
         guard !names.isEmpty else { return "Saved Mix" }
 
-        if tracks.count > 2 {
-            return "\(names.joined(separator: " + ")) + \(tracks.count - 2)"
+        if tracks.count == 1 {
+            return names[0]
+        }
+        
+        if tracks.count == 2 {
+            return "\(names[0]) & \(names[1])"
         }
 
-        return names.joined(separator: " + ")
+        if tracks.count > 3 {
+            let joinedNames = names.joined(separator: ", ")
+            return "\(joinedNames) & \(tracks.count - 3) more"
+        }
+
+        // Exactly 3 tracks
+        return "\(names[0]), \(names[1]) & \(names[2])"
     }
 
     func makeSavedMix() -> SavedMix {
