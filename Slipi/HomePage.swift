@@ -40,35 +40,24 @@ struct SoundCategory: Identifiable {
  
 let sampleCategories: [SoundCategory] = [
     SoundCategory(name: "Nature", items: [
-        SoundItem(track: .windBlowing, name: "Wind"),
-        SoundItem(name: "Campfire", icon: "flame"),
-        SoundItem(name: "Bird", icon: "bird"),
-        SoundItem(track: .thunderStrike, name: "Thunder"),
-        SoundItem(track: .lightRain, name: "Rain"),
-        SoundItem(name: "Ocean", icon: "water.waves"),
-        SoundItem(track: .dryLeaves, name: "Forest", icon: "tree"),
-        SoundItem(track: .waterFlowing, name: "Creek"),
-        SoundItem(track: .fishMoving, name: "Fish")
+        SoundItem(track: .autumnForest),
+        SoundItem(track: .crickets),
+        SoundItem(track: .dryLeaves),
+        SoundItem(track: .fishMoving),
+        SoundItem(track: .morningBirdsong),
+        SoundItem(track: .waterFlowing),
+        SoundItem(track: .winterForest)
     ]),
     SoundCategory(name: "Weather", items: [
-        SoundItem(track: .windBlowing, name: "Wind"),
-        SoundItem(name: "Storm", icon: "cloud.bolt.rain"),
-        SoundItem(track: .lightRain, name: "Rain", icon: "cloud.drizzle"),
-        SoundItem(track: .thunderStrike, name: "Thunder"),
-        SoundItem(name: "Snow", icon: "snowflake"),
-        SoundItem(name: "Fog", icon: "cloud.fog"),
-        SoundItem(name: "Hail", icon: "cloud.hail"),
-        SoundItem(name: "Blizzard", icon: "wind.snow")
+        SoundItem(track: .icySnow),
+        SoundItem(track: .lightRain),
+        SoundItem(track: .sunnyDay),
+        SoundItem(track: .thunderStrike),
+        SoundItem(track: .windBlowing)
     ]),
     SoundCategory(name: "Brainwaves", items: [
-        SoundItem(name: "Alpha", icon: "waveform.path"),
-        SoundItem(name: "Beta", icon: "waveform"),
-        SoundItem(name: "Theta", icon: "waveform.path.ecg"),
-        SoundItem(name: "Delta", icon: "chart.xyaxis.line"),
-        SoundItem(name: "Gamma", icon: "waveform.badge.plus"),
-        SoundItem(name: "Focus", icon: "brain.head.profile"),
-        SoundItem(name: "Relax", icon: "sparkles"),
-        SoundItem(name: "Sleep", icon: "moon.zzz")
+        SoundItem(track: .deepBrownNoise),
+        SoundItem(track: .greenNoise)
     ])
 ]
  
