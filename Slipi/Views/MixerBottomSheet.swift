@@ -54,7 +54,7 @@ struct MixerBottomSheet: View {
         .presentationDetents([.medium, .large])
         .presentationBackground(.black)
         .sheet(item: $tuningTrack) { track in
-            FXInspectorView(
+            AudioTuning(
                 track: track,
                 savedTrack: savedTrack(for: track)
             )

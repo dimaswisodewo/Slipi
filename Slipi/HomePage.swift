@@ -127,8 +127,6 @@ let sampleCategories: [SoundCategory] = [
  
 let filterTabs = ["All"] + sampleCategories.map(\.name)
  
-// MARK: - Color Theme
- 
 // MARK: - Sound Card View
  
 struct SoundCardView: View {
@@ -369,6 +367,8 @@ struct HomePage: View {
                 ForEach(filteredCategories) { category in
                     CategorySectionView(category: category)
                 }
+                
+                Spacer().frame(height: 90)
             }
         }
         .background {

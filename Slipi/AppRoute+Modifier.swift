@@ -36,7 +36,7 @@ struct RouterViewModifier: ViewModifier {
     private func handlePresentation(_ route: AppRoute) -> some View {
         switch route {
         case .equalizer(let track):
-            FXInspectorView(track: track)
+            AudioTuning(track: track)
                 .presentationDetents([.medium])
         default:
             EmptyView()
