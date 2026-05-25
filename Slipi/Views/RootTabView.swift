@@ -12,22 +12,23 @@ struct RootTabView: View {
     var body: some View {
         @Bindable var routerBindable = router
         
-        VStack(spacing: 0) {
-            ZStack(alignment: .bottom) {
-                ForEach(AppTab.allCases) { tab in
-                    NavigationStack(path: $routerBindable.paths[tab] ?? .constant([])) {
-                        tabContentView(for: tab)
-                            .withAppRouter()
-                    }
-                    .opacity(router.selectedTab == tab ? 1 : 0)
-                    .allowsHitTesting(router.selectedTab == tab)
+        ZStack {
+            ForEach(AppTab.allCases) { tab in
+                NavigationStack(path: $routerBindable.paths[tab] ?? .constant([])) {
+                    tabContentView(for: tab)
+                        .withAppRouter()
                 }
-                
-                FloatingMiniPlayerView(mixer: mixer)
+                .opacity(router.selectedTab == tab ? 1 : 0)
+                .allowsHitTesting(router.selectedTab == tab)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            CustomTabBarView()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            VStack(spacing: 0) {
+                FloatingMiniPlayerView(mixer: mixer)
+
+                CustomTabBarView()
+            }
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -56,7 +57,8 @@ struct RootTabView: View {
             Text("Me")
         }
         .navigationTitle("Me")
-    }}
+    }
+}
 
 // Helper to provide a constant binding for safety, though paths should always exist for all keys
 private func ??<T>(lhs: Binding<T?>, rhs: Binding<T>) -> Binding<T> {

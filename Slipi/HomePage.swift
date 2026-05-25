@@ -317,9 +317,6 @@ struct HomePage: View {
                         ForEach(filteredCategories) { category in
                             CategorySectionView(category: category)
                         }
- 
-                        // Bottom padding for tab bar
-                        Spacer().frame(height: 90)
                     }
                 }
             }
