@@ -19,7 +19,6 @@ struct CustomTabBarView: View {
         .padding(.vertical, 12)
         .background(
             Color.brandBackground
-                .ignoresSafeArea(edges: .bottom)
                 .overlay(
                     Rectangle()
                         .frame(height: 0.5)

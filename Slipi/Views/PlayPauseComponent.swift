@@ -9,17 +9,22 @@ import SwiftUI
 
 struct PlayPauseComponent: View {
     @ObservedObject var mixer: MixerEngine
-    @State private var isFavorite = false
+    var isFavorite = false
+    var canToggleFavorite = false
+    var onFavoriteToggle: () -> Void = {}
 
     var body: some View {
         HStack(spacing: 24) {
             Button {
-                isFavorite.toggle()
+                onFavoriteToggle()
             } label: {
                 Image(systemName: isFavorite ? "heart.fill" : "heart")
                     .font(.system(size: 24, weight: .semibold))
             }
             .buttonStyle(CircleIconButtonStyle())
+            .disabled(!canToggleFavorite)
+            .opacity(canToggleFavorite ? 1 : 0.45)
+            .accessibilityLabel(isFavorite ? "Remove saved mix" : "Save mix")
 
             Button {
                 mixer.togglePlayPause()
@@ -61,6 +66,6 @@ private struct CircleIconButtonStyle: ButtonStyle {
 #Preview {
     ZStack {
         Color.black.ignoresSafeArea()
-        PlayPauseComponent(mixer: .shared)
+        PlayPauseComponent(mixer: .shared, canToggleFavorite: true)
     }
 }

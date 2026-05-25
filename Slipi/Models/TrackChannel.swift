@@ -41,4 +41,13 @@ class TrackChannel: ObservableObject, ModelPassable {
         eqNode.bands[2].frequency = 5000 // Treble
         eqNode.bands.forEach { $0.filterType = .parametric }
     }
+
+    func apply(_ savedTrack: SavedMixTrack) {
+        volume = savedTrack.volume
+        pan = savedTrack.pan
+        speed = savedTrack.speed
+        bass = savedTrack.bass
+        mid = savedTrack.mid
+        treble = savedTrack.treble
+    }
 }

@@ -86,39 +86,41 @@ struct SoundCardView: View {
 
     private var content: some View {
         VStack(spacing: 8) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        isActive ?
-                        LinearGradient(
-                            colors: [Color.brandOrange, Color.brandOrangeDark],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ) :
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.1), Color.white.opacity(0.05)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+            RoundedRectangle(cornerRadius: 16)
+                .fill(
+                    isActive ?
+                    LinearGradient(
+                        colors: [Color.brandOrange, Color.brandOrangeDark],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ) :
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.1), Color.white.opacity(0.05)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
-                    .aspectRatio(1, contentMode: .fit)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(isActive ? 0.8 : 0), lineWidth: 2)
-                    )
-                    .shadow(color: isActive ? Color.brandOrange.opacity(0.4) : Color.clear, radius: 8, x: 0, y: 4)
- 
-                Image(systemName: item.icon)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(22)
-                    .foregroundStyle(isActive ? .white : .white.opacity(0.4))
-                    .fontWeight(.light)
-            }
+                )
+                .aspectRatio(1, contentMode: .fit)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(Color.white.opacity(isActive ? 0.8 : 0), lineWidth: 2)
+                )
+                .overlay(
+                    Image(systemName: item.icon)
+                        .resizable()
+                        .scaledToFit()
+                        .padding(22)
+                        .foregroundStyle(isActive ? .white : .white.opacity(0.4))
+                        .fontWeight(.light)
+                )
+                .shadow(color: isActive ? Color.brandOrange.opacity(0.4) : Color.clear, radius: 8, x: 0, y: 4)
  
             Text(item.name)
-                .font(.system(size: 13, weight: isActive ? .medium : .regular))
+                .font(.system(size: 13, weight: .regular))
                 .foregroundStyle(isActive ? .white : .white.opacity(0.6))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .frame(height: 36, alignment: .top)
         }
         .scaleEffect(isPressed ? 0.94 : 1.0)
         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
@@ -151,10 +153,10 @@ struct CategorySectionView: View {
     let category: SoundCategory
  
     let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top)
     ]
  
     var body: some View {
@@ -244,8 +246,68 @@ struct HomePage: View {
     }
  
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Background gradient
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 20) {
+                // MARK: Header
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Image(systemName: "wind.snow")
+                            .font(.system(size: 36, weight: .thin))
+                            .foregroundColor(.white)
+                            .padding(.bottom, 4)
+ 
+                        Text("Good Evening, Dea!")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+ 
+                // MARK: Search Bar
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.white.opacity(0.5))
+                    TextField("", text: $searchText,
+                              prompt: Text("Search weather, nature, binaural...")
+                        .foregroundColor(.white.opacity(0.4))
+                    )
+                    .foregroundColor(.white)
+                    .font(.system(size: 15))
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.white.opacity(0.08))
+                )
+                .padding(.horizontal, 16)
+ 
+                // MARK: Filter Tabs
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(filterTabs, id: \.self) { tab in
+                            FilterTabView(
+                                title: tab,
+                                isSelected: selectedTab == tab
+                            ) {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    selectedTab = tab
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+ 
+                // MARK: Category Sections
+                ForEach(filteredCategories) { category in
+                    CategorySectionView(category: category)
+                }
+            }
+        }
+        .background {
             LinearGradient(
                 colors: [
                     Color(red: 0.25, green: 0.08, blue: 0.02),
@@ -255,71 +317,6 @@ struct HomePage: View {
                 endPoint: .center
             )
             .ignoresSafeArea()
- 
-            VStack(spacing: 0) {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
- 
-                        // MARK: Header
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Image(systemName: "wind.snow")
-                                    .font(.system(size: 36, weight: .thin))
-                                    .foregroundColor(.white)
-                                    .padding(.bottom, 4)
- 
-                                Text("Good Evening, Dea!")
-                                    .font(.system(size: 26, weight: .bold))
-                                    .foregroundColor(.white)
-                            }
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
- 
-                        // MARK: Search Bar
-                        HStack(spacing: 10) {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.white.opacity(0.5))
-                            TextField("", text: $searchText,
-                                      prompt: Text("Search weather, nature, binaural...")
-                                .foregroundColor(.white.opacity(0.4))
-                            )
-                            .foregroundColor(.white)
-                            .font(.system(size: 15))
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(Color.white.opacity(0.08))
-                        )
-                        .padding(.horizontal, 16)
- 
-                        // MARK: Filter Tabs
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(filterTabs, id: \.self) { tab in
-                                    FilterTabView(
-                                        title: tab,
-                                        isSelected: selectedTab == tab
-                                    ) {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            selectedTab = tab
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                        }
- 
-                        // MARK: Category Sections
-                        ForEach(filteredCategories) { category in
-                            CategorySectionView(category: category)
-                        }
-                    }
-                }
-            }
         }
         .preferredColorScheme(.dark)
         .onChange(of: searchText) { _, newValue in

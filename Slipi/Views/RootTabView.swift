@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RootTabView: View {
     @Environment(NavigationRouter.self) private var router
@@ -29,6 +30,7 @@ struct RootTabView: View {
 
                 CustomTabBarView()
             }
+            .background(Color.brandBackground.ignoresSafeArea(edges: .bottom))
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -39,17 +41,10 @@ struct RootTabView: View {
         case .home:
             HomePage()
         case .favorites:
-            favoritesPlaceholder
+            FavoritesRemixView()
         case .me:
             mePlaceholder
         }
-    }
-
-    private var favoritesPlaceholder: some View {
-        VStack {
-            Text("Favorites")
-        }
-        .navigationTitle("Favorites")
     }
 
     private var mePlaceholder: some View {
@@ -71,4 +66,5 @@ private func ??<T>(lhs: Binding<T?>, rhs: Binding<T>) -> Binding<T> {
 #Preview {
     RootTabView()
         .environment(NavigationRouter())
+        .modelContainer(for: [SavedMix.self, SavedMixTrack.self], inMemory: true)
 }

@@ -31,6 +31,9 @@ struct CardMusicView: View {
     
     // Action ketika CardMusic saat ini diklik
     let onClickAction: () -> Void
+    var onRenameAction: (String) -> Void = { _ in }
+    var onUnfavoriteAction: () -> Void = {}
+    var onDeleteAction: () -> Void = {}
     
     // Menentukan Pesan Berapa music yang dimixed
     var itemsMixed: String {
@@ -42,142 +45,138 @@ struct CardMusicView: View {
     }
     
     var body: some View {
-        
-        Button {
-            onClickAction()
-        } label: {
-            HStack(spacing: 10) {
-                
-                ZStack {
-                    ForEach(images.indices.reversed(), id: \.self) { index in
-                        
-                        CircleIcon(
-                            icon: .system(images[index]),
-                            size: imageSize
-                        )
-                        .offset(
-                            x: CGFloat(index) * overlapOffset
-                            - CGFloat(images.count - 1) * overlapOffset / 2
-                        )
-                        .zIndex(Double(images.count - index))
-                    }
-                }
-                .frame(
-                    width: CGFloat(maxImages - 1) * overlapOffset + imageSize,
-                    height: imageSize
-                )
-                
-                VStack(alignment: .leading) {
-                    Text(title)
-                        .foregroundStyle(.white)
-                        .font(.system(.headline, weight: .semibold))
-                    
-                    Text(itemsMixed)
-                        .foregroundStyle(.white)
-                        .font(.system(.subheadline, weight: .light))
-                                        
-                }
-                .padding(.leading, 10)
-                
-                Spacer()
-            
-                Menu {
-                    Button{
-                        remixName = title
-                        showRenameSheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "square.and.pencil")
-                            Text("Rename")
-                        }
-                        
-                    }
-                    
-                    Button{
-                        showUnfavoriteDialog = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "heart.fill")
-                                .foregroundStyle(.orange)
-                                .font(.system(.title2, weight: .light))
-                            
-                            Text("Unfavorite")
+        HStack(spacing: 10) {
+            // The card body is the playback target. Keep it separate from the
+            // menu so tapping the ellipsis never also triggers onClickAction().
+            Button {
+                onClickAction()
+            } label: {
+                HStack(spacing: 10) {
+                    ZStack {
+                        ForEach(images.indices.reversed(), id: \.self) { index in
+                            CircleIcon(
+                                icon: .system(images[index]),
+                                size: imageSize
+                            )
+                            .offset(
+                                x: CGFloat(index) * overlapOffset
+                                - CGFloat(images.count - 1) * overlapOffset / 2
+                            )
+                            .zIndex(Double(images.count - index))
                         }
                     }
-                    .tint(.orange)
-                    
-                    Button{
-                        showDeleteDialog = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "trash.fill")
-                                .foregroundStyle(.orange)
-                                .font(.system(.title2, weight: .light))
-                            
-                            Text("Delete")
-                        }
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .foregroundStyle(.white)
-                        .font(.system(.title2, weight: .light))
-                        .padding(.vertical, 15)
-                        .padding(.leading, 15)
-                        .contentShape(Rectangle())
-                }
-                .menuOrder(.fixed)
-                .buttonStyle(.plain)
-                .preferredColorScheme(.dark)
-                
-            }
-            .contentShape(Rectangle())
-            .padding(.vertical, 16)
-            .padding(.horizontal, 8)
-            
-            .background(
-                RoundedRectangle(cornerRadius: 22)
-                    .fill(
-                        (isHeld || isPressed)
-                        ? .white.opacity(0.07)
-                        : .white.opacity(0.04)
+                    .frame(
+                        width: CGFloat(maxImages - 1) * overlapOffset + imageSize,
+                        height: imageSize
                     )
-            )
-            
-            .overlay {
-                RoundedRectangle(cornerRadius: 22)
-                    .stroke(.white.opacity(0.05), lineWidth: 1)
-            }
 
-            .scaleEffect((isHeld || isPressed) ? 0.985 : 1)
+                    VStack(alignment: .leading) {
+                        Text(title)
+                            .foregroundStyle(.white)
+                            .font(.system(.headline, weight: .semibold))
 
-            .animation(
-                .spring(response: 0.25, dampingFraction: 0.8),
-                value: isHeld || isPressed
-            )
-
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in
-                        if !isPressed {
-                            isPressed = true
-                        }
+                        Text(itemsMixed)
+                            .foregroundStyle(.white)
+                            .font(.system(.subheadline, weight: .light))
                     }
-                    .onEnded { _ in
-                        isPressed = false
-                    }
-            )
+                    .padding(.leading, 10)
 
-            .onLongPressGesture(
-                minimumDuration: 0.5,
-                pressing: { pressing in
-                    isHeld = pressing
-                },
-                perform: {
-
+                    Spacer()
                 }
-            )
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity)
+
+            // Destructive/edit actions live in their own control. This avoids
+            // nested Button/Menu behavior, which is easy to break in SwiftUI.
+            Menu {
+                Button {
+                    remixName = title
+                    showRenameSheet = true
+                } label: {
+                    HStack {
+                        Image(systemName: "square.and.pencil")
+                        Text("Rename")
+                    }
+                }
+
+                Button {
+                    showUnfavoriteDialog = true
+                } label: {
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(.orange)
+                            .font(.system(.title2, weight: .light))
+
+                        Text("Unfavorite")
+                    }
+                }
+                .tint(.orange)
+
+                Button {
+                    showDeleteDialog = true
+                } label: {
+                    HStack {
+                        Image(systemName: "trash.fill")
+                            .foregroundStyle(.orange)
+                            .font(.system(.title2, weight: .light))
+
+                        Text("Delete")
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .foregroundStyle(.white)
+                    .font(.system(.title2, weight: .light))
+                    .padding(.vertical, 15)
+                    .padding(.leading, 15)
+                    .contentShape(Rectangle())
+            }
+            .menuOrder(.fixed)
+            .buttonStyle(.plain)
+            .preferredColorScheme(.dark)
         }
-        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+        .padding(.vertical, 16)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(
+                    (isHeld || isPressed)
+                    ? .white.opacity(0.07)
+                    : .white.opacity(0.04)
+                )
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(.white.opacity(0.05), lineWidth: 1)
+        }
+        .scaleEffect((isHeld || isPressed) ? 0.985 : 1)
+        .animation(
+            .spring(response: 0.25, dampingFraction: 0.8),
+            value: isHeld || isPressed
+        )
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    if !isPressed {
+                        isPressed = true
+                    }
+                }
+                .onEnded { _ in
+                    isPressed = false
+                }
+        )
+        .onLongPressGesture(
+            minimumDuration: 0.5,
+            pressing: { pressing in
+                isHeld = pressing
+            },
+            perform: {
+
+            }
+        )
         .cornerRadius(16)
         
         // Rename Sheet
@@ -224,7 +223,7 @@ struct CardMusicView: View {
                         return
                     }
                                         
-                    // Action
+                    onRenameAction(newName)
                                        
                     showRenameSheet = false
                     
@@ -253,7 +252,7 @@ struct CardMusicView: View {
             isPresented: $showUnfavoriteDialog
         ) {
             Button("Unfavorite") {
-                // Action
+                onUnfavoriteAction()
             }
             
             Button("Cancel", role: .cancel) { }
@@ -268,7 +267,7 @@ struct CardMusicView: View {
             isPresented: $showDeleteDialog
         ) {
             Button("Delete", role: .destructive) {
-                // Action
+                onDeleteAction()
             }
             
             Button("Cancel", role: .cancel) { }
