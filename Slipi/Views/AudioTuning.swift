@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AudioTuning: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(NavigationRouter.self) private var router
     @ObservedObject var track: TrackChannel
     var savedTrack: SavedMixTrack? = nil
 
@@ -28,7 +28,7 @@ struct AudioTuning: View {
                 Spacer()
 
                 Button("Done") {
-                    dismiss()
+                    router.dismissSheet()
                 }
                 .foregroundColor(.blue)
                 .font(.system(size: 17, weight: .semibold))

@@ -10,6 +10,7 @@ import SwiftUI
 
 enum AppRoute: Hashable, Identifiable {
     case mixer
+    case mixerSheet
     case equalizer(track: TrackChannel)
     
     var id: Self { self }

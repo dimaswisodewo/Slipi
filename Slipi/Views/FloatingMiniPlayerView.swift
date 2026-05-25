@@ -6,8 +6,8 @@
 import SwiftUI
 
 struct FloatingMiniPlayerView: View {
+    @Environment(NavigationRouter.self) private var router
     @ObservedObject var mixer: MixerEngine
-    @State private var isShowingPlayerSheet = false
 
     private let imageSize: CGFloat = 35
     private let maxImages = 3
@@ -21,7 +21,7 @@ struct FloatingMiniPlayerView: View {
         if !mixer.tracks.isEmpty {
             HStack(spacing: 12) {
                 Button {
-                    isShowingPlayerSheet = true
+                    router.presentSheet(.mixerSheet)
                 } label: {
                     HStack(spacing: 12) {
                         iconStack
@@ -53,9 +53,6 @@ struct FloatingMiniPlayerView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
             .transition(.move(edge: .bottom).combined(with: .opacity))
-            .sheet(isPresented: $isShowingPlayerSheet) {
-                MixerBottomSheet(mixer: mixer)
-            }
         }
     }
 

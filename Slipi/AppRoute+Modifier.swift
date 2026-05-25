@@ -35,9 +35,14 @@ struct RouterViewModifier: ViewModifier {
     @ViewBuilder
     private func handlePresentation(_ route: AppRoute) -> some View {
         switch route {
+        case .mixerSheet:
+            MixerBottomSheet(mixer: MixerEngine.shared)
+                .presentationDetents([.medium, .large])
+                .presentationBackground(.black)
         case .equalizer(let track):
             AudioTuning(track: track)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
+                .presentationBackground(.black)
         default:
             EmptyView()
         }
