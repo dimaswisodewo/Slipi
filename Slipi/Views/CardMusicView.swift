@@ -72,10 +72,12 @@ struct CardMusicView: View {
 
                     VStack(alignment: .leading) {
                         Text(title)
+                            .lineLimit(2)
                             .foregroundStyle(.white)
                             .font(.system(.headline, weight: .semibold))
 
                         Text(itemsMixed)
+                            .lineLimit(2)
                             .foregroundStyle(.white)
                             .font(.system(.subheadline, weight: .light))
                     }

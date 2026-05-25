@@ -73,6 +73,8 @@ struct FavoritesRemixView: View {
                             }
                         }
                     }
+                    
+                    Spacer().frame(height: 90)
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 30)

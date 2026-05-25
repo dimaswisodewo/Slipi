@@ -3,13 +3,17 @@ import SwiftData
 
 struct MixerBottomSheet: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(NavigationRouter.self) private var router
     @Query(sort: \SavedMix.updatedAt, order: .reverse) private var savedMixes: [SavedMix]
     @ObservedObject private var mixer: MixerEngine
-    @State private var tuningTrack: TrackChannel?
     @State private var saveErrorMessage: String?
 
     init(mixer: MixerEngine = .shared) {
         self.mixer = mixer
+    }
+
+    private var isTuningPresented: Bool {
+        router.presentedSheets.count > 1
     }
 
     var body: some View {
@@ -31,7 +35,7 @@ struct MixerBottomSheet: View {
                                 track: track,
                                 savedTrack: savedTrack(for: track)
                             ) {
-                                tuningTrack = track
+                                router.presentSheet(.equalizer(track: track))
                             }
                         }
                     }
@@ -49,18 +53,10 @@ struct MixerBottomSheet: View {
         }
         .padding(.horizontal, 16)
         .foregroundColor(.white)
-        .blur(radius: tuningTrack == nil ? 0 : 6)
-        .animation(.easeInOut(duration: 0.2), value: tuningTrack != nil)
+        .blur(radius: isTuningPresented ? 6 : 0)
+        .animation(.easeInOut(duration: 0.2), value: isTuningPresented)
         .presentationDetents([.medium, .large])
         .presentationBackground(.black)
-        .sheet(item: $tuningTrack) { track in
-            FXInspectorView(
-                track: track,
-                savedTrack: savedTrack(for: track)
-            )
-                .presentationDetents([.medium, .large])
-                .presentationBackground(.black)
-        }
         .alert("Unable to Save Mix", isPresented: saveErrorBinding) {
             Button("OK", role: .cancel) { }
         } message: {
