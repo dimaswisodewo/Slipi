@@ -19,11 +19,19 @@ struct SettingSleepey: View {
     @State private var trebleGain = 0.0
     @State private var sleepGoalHours = 8
     @State private var defaultSleepTimerMinutes = 60
+    @State private var bedtimeReminderEnabled = true
+    @State private var bedtimeReminderTime = Self.defaultBedtimeReminderTime
+    @State private var bedtimeReminderDays: Set<Int> = [1, 2, 3, 4, 5]
+    @State private var bedtimeWindDownMinutes = 30
     @State private var loopMode = true
     @State private var fadeOutBeforeStop = true
     @State private var dimScreenOnPlay = true
     @State private var pushNotifications = false
     @State private var bedtimeNudge = true
+
+    private static var defaultBedtimeReminderTime: Date {
+        Calendar.current.date(from: DateComponents(hour: 22, minute: 30)) ?? Date()
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -83,14 +91,22 @@ struct SettingSleepey: View {
                                     isDimmed: true
                                 )
 
-                                NavigationSettingRow(
-                                    icon: "calendar.circle.fill",
-                                    title: "Bedtime reminder",
-                                    // TODO: not yet interactive, should add another page for interactive purposes
-                                    subtitle: "Prompt to start your mix",
-                                    value: "10:30 PM",
-                                    isDimmed: true
-                                )
+                                NavigationLink {
+                                    NewSettingSleepey(
+                                        isReminderEnabled: $bedtimeReminderEnabled,
+                                        reminderTime: $bedtimeReminderTime,
+                                        selectedDays: $bedtimeReminderDays,
+                                        windDownMinutes: $bedtimeWindDownMinutes
+                                    )
+                                } label: {
+                                    BedtimeReminderNavigationRow(
+                                        isEnabled: bedtimeReminderEnabled,
+                                        reminderTime: bedtimeReminderTime,
+                                        selectedDays: bedtimeReminderDays
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .overlay(alignment: .bottom) { RowDivider() }
 //                            }
 //
 //                            settingsSection(title: "Appearance") {
@@ -129,22 +145,22 @@ struct SettingSleepey: View {
                                 )
                             }
 
-                            settingsSection(title: "Support") {
-                                NavigationSettingRow(
-                                    icon: "questionmark.circle.fill",
-                                    title: "Help & support",
-                                    subtitle: "FAQ and contact us",
-                                    // TODO: not yet interactive, should add another page to mshow the details
-                                    isDimmed: true
-                                )
-                            }
-
-                            Text("Slipi v2.1.0")
-                                .font(.caption2.weight(.medium))
-                                .foregroundStyle(Palette.textMuted)
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 2)
-                                .padding(.bottom, 18)
+//                            settingsSection(title: "Support") {
+//                                NavigationSettingRow(
+//                                    icon: "questionmark.circle.fill",
+//                                    title: "Help & support",
+//                                    subtitle: "FAQ and contact us",
+//                                    // TODO: not yet interactive, should add another page to mshow the details
+//                                    isDimmed: true
+//                                )
+//                            }
+//
+//                            Text("Slipi v2.1.0")
+//                                .font(.caption2.weight(.medium))
+//                                .foregroundStyle(Palette.textMuted)
+//                                .frame(maxWidth: .infinity)
+//                                .padding(.top, 2)
+//                                .padding(.bottom, 18)
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
@@ -304,11 +320,11 @@ private struct SleepGoalSettingsView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Sleep Goal")
-                            .font(.title2.weight(.semibold))
-                            .foregroundStyle(Palette.textPrimary)
+//                        Text("Sleep Goal")
+//                            .font(.title2.weight(.semibold))
+//                            .foregroundStyle(Palette.textPrimary)
 
-                        Text("Choose the daily rest target shown across dea's sleep routine.")
+                        Text("Choose the daily rest target shown across yout sleep routine.")
                             .font(.subheadline)
                             .foregroundStyle(Palette.textSecondary)
                     }
@@ -316,16 +332,16 @@ private struct SleepGoalSettingsView: View {
                     VStack(spacing: 18) {
                         ZStack {
                             Circle()
-                                .stroke(Palette.yellow.opacity(0.18), lineWidth: 12)
+                                .stroke(Palette.pumpkin.opacity(0.18), lineWidth: 12)
                             Circle()
                                 .trim(from: 0, to: progress)
-                                .stroke(Palette.yellow, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                                .stroke(Palette.pumpkin, style: StrokeStyle(lineWidth: 12, lineCap: .round))
                                 .rotationEffect(.degrees(-90))
 
                             VStack(spacing: 2) {
                                 Image(systemName: "bed.double.fill")
                                     .font(.system(size: 24, weight: .semibold))
-                                    .foregroundStyle(Palette.yellow)
+                                    .foregroundStyle(Palette.pumpkin)
                                 Text("\(sleepGoalHours)")
                                     .font(.system(size: 56, weight: .bold))
                                     .foregroundStyle(Palette.chefHat)
@@ -475,13 +491,27 @@ private struct DefaultSleepTimerSettingsView: View {
                     Picker("Default sleep timer", selection: $draftMinutes) {
                         ForEach(timerOptions, id: \.self) { minutes in
                             Text("\(minutes) min")
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(Palette.chefHat)
                                 .tag(minutes)
                         }
                     }
                     .pickerStyle(.wheel)
                     .frame(height: 132)
                     .clipped()
-                    .tint(Palette.sauce)
+                    .colorScheme(.dark)
+                    .background(Palette.cardInset, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(Palette.chefHat.opacity(0.34), lineWidth: 1)
+                            .frame(height: 36)
+                            .padding(.horizontal, 12)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Palette.border, lineWidth: 1)
+                    )
+                    .tint(Palette.chefHat)
                 }
                 .padding(20)
                 .frame(maxWidth: .infinity)
@@ -519,9 +549,16 @@ private struct DefaultSleepTimerSettingsView: View {
             .padding(.top, 20)
             .padding(.bottom, 30)
         }
-        .navigationTitle("Sleep Timer")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Sleep Timer")
+                    .font(.headline.weight(.bold))
+                    .foregroundStyle(Palette.chefHat)
+            }
+        }
         .toolbarBackground(Palette.pageBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .tint(Palette.sauce)
@@ -529,6 +566,68 @@ private struct DefaultSleepTimerSettingsView: View {
 
     private var timerProgress: Double {
         Double(draftMinutes - 15) / Double(180 - 15)
+    }
+}
+
+private struct BedtimeReminderNavigationRow: View {
+    let isEnabled: Bool
+    let reminderTime: Date
+    let selectedDays: Set<Int>
+
+    private var detail: String {
+        if !isEnabled {
+            return "Off"
+        }
+
+        if selectedDays.count == 7 {
+            return "Every day"
+        }
+
+        if selectedDays == [1, 2, 3, 4, 5] {
+            return "Weekdays"
+        }
+
+        if selectedDays.isEmpty {
+            return "No days"
+        }
+
+        return "\(selectedDays.count) days"
+    }
+
+    var body: some View {
+        HStack(spacing: 11) {
+            SettingIcon(systemName: "calendar.circle.fill")
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Bedtime reminder")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.textPrimary)
+                Text("Prompt to start your mix")
+                    .font(.caption2)
+                    .foregroundStyle(Palette.textSecondary)
+            }
+
+            Spacer()
+
+            HStack(spacing: 8) {
+                VStack(alignment: .trailing, spacing: 1) {
+                    Text(isEnabled ? reminderTime.formatted(date: .omitted, time: .shortened) : "Off")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(isEnabled ? Palette.textMuted : Palette.sauce)
+
+                    Text(detail)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Palette.textMuted)
+                }
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Palette.borderStrong)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
+        .contentShape(Rectangle())
     }
 }
 
@@ -597,9 +696,9 @@ private struct EqualizerSettingsView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("DSP Tuning")
-                            .font(.title2.weight(.semibold))
-                            .foregroundStyle(Palette.textPrimary)
+//                        Text("DSP Tuning")
+//                            .font(.title2.weight(.semibold))
+//                            .foregroundStyle(Palette.textPrimary)
 
                         Text("Shape the sound profile used by your sleep mix.")
                             .font(.subheadline)
@@ -769,7 +868,7 @@ private struct EditProfileView: View {
                     HStack(spacing: 14) {
                         ProfileAvatar(symbol: profilePicture, size: 64)
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 1) {
                             Text(profileName.isEmpty ? "dea" : profileName)
                                 .font(.headline.weight(.semibold))
                                 .foregroundStyle(Palette.textPrimary)
@@ -779,7 +878,7 @@ private struct EditProfileView: View {
                                 .foregroundStyle(Palette.textSecondary)
                         }
                     }
-                    .padding(.vertical, 6)
+                    .padding(.vertical, 10)
                     .listRowBackground(Palette.cardBackground)
                 }
 
