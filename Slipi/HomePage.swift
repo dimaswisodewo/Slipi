@@ -82,7 +82,7 @@ let sampleCategories: [SoundCategory] = [
         SoundItem(track: .thunderStrike),
         SoundItem(track: .thunderStorm),
         SoundItem(track: .windBlowing),
-        SoundItem(track: .windEars)
+        SoundItem(track: .windInEars)
     ]),
     SoundCategory(name: "Brainwaves", items: [
         SoundItem(track: .deepBrownNoise),
@@ -118,7 +118,7 @@ let sampleCategories: [SoundCategory] = [
         SoundItem(track: .walkingForest),
         SoundItem(track: .walkingMeltedSnow),
         SoundItem(track: .walkingLeaves),
-        SoundItem(track: .walkingSnow),
+        SoundItem(track: .walkingOnSnow),
         SoundItem(track: .walkingOnDryLeaves),
         SoundItem(track: .waterSlushing),
         SoundItem(track: .writing)
