@@ -61,9 +61,10 @@ struct FloatingMiniPlayerView: View {
 
     private var titleStack: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Current Mix")
+            Text(mixer.currentMixTitle)
                 .font(.headline.weight(.semibold))
                 .foregroundStyle(.white)
+                .lineLimit(1)
 
             Text(mixer.tracks.count == 1 ? "1 Item Mixed" : "\(mixer.tracks.count) Items Mixed")
                 .font(.subheadline.weight(.light))

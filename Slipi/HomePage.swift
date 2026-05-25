@@ -119,6 +119,9 @@ struct SoundCardView: View {
             Text(item.name)
                 .font(.system(size: 13, weight: isActive ? .medium : .regular))
                 .foregroundStyle(isActive ? .white : .white.opacity(0.6))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .frame(height: 36, alignment: .top)
         }
         .scaleEffect(isPressed ? 0.94 : 1.0)
         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
@@ -151,10 +154,10 @@ struct CategorySectionView: View {
     let category: SoundCategory
  
     let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: 12, alignment: .top)
     ]
  
     var body: some View {

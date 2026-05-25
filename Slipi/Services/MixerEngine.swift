@@ -16,6 +16,11 @@ class MixerEngine: ObservableObject {
     // This is the array your SwiftUI views will look at
     @Published var tracks: [TrackChannel] = []
     @Published var isPlaying = false
+    @Published var activeMixID: UUID?
+
+    // The mini player reads this label. Manual mixer changes use the generic
+    // name, while saved-remix playback replaces it with the saved mix title.
+    @Published var currentMixTitle = "Current Mix"
     
     private init() {
         audioEngine.attach(mainMixer)
@@ -58,13 +63,22 @@ class MixerEngine: ObservableObject {
         activeTrack(for: track) != nil
     }
 
-    func addTrack(_ track: AvailableTrack) {
+    func addTrack(
+        _ track: AvailableTrack,
+        shouldAutoplay: Bool = true,
+        shouldResetMixTitle: Bool = true
+    ) {
         guard activeTrack(for: track) == nil else { return }
 
         guard let fileURL = Bundle.main.url(forResource: track.fileName, withExtension: "wav") ??
                             Bundle.main.url(forResource: track.fileName, withExtension: "mp3") else {
             print("Could not find local file: \(track.fileName).wav or .mp3")
             return
+        }
+
+        if shouldResetMixTitle {
+            currentMixTitle = "Current Mix"
+            activeMixID = nil
         }
         
         do {
@@ -87,6 +101,8 @@ class MixerEngine: ObservableObject {
             // Always schedule the file so it's ready in the buffer
             scheduleLoop(channel)
             
+            guard shouldAutoplay else { return }
+
             // Autoplay when a track is added
             if !isPlaying {
                 isPlaying = true
@@ -117,6 +133,11 @@ class MixerEngine: ObservableObject {
         if tracks.isEmpty {
             isPlaying = false
         }
+
+        // Removing a track means the current mixer state may no longer match
+        // a saved remix, so the mini player should go back to the generic name.
+        currentMixTitle = "Current Mix"
+        activeMixID = nil
     }
     
     private func scheduleLoop(_ channel: TrackChannel) {
@@ -137,13 +158,87 @@ class MixerEngine: ObservableObject {
             tracks.forEach { $0.playerNode.pause() }
             isPlaying = false
         } else {
-            tracks.forEach { $0.playerNode.play() }
-            isPlaying = true
+            play()
         }
     }
     
+    func play() {
+        guard !tracks.isEmpty else { return }
+
+        tracks.forEach { $0.playerNode.play() }
+        isPlaying = true
+    }
+
     func stop() {
         tracks.forEach { $0.playerNode.stop() }
         isPlaying = false
+    }
+
+    func removeAllTracks() {
+        stop()
+
+        while let track = tracks.first {
+            removeTrack(id: track.id)
+        }
+
+        currentMixTitle = "Current Mix"
+        activeMixID = nil
+    }
+}
+
+extension MixerEngine {
+    func mixTrackSnapshots() -> [SavedMixTrackSnapshot] {
+        tracks.enumerated().map { index, track in
+            SavedMixTrackSnapshot(
+                trackID: track.trackID,
+                name: track.name,
+                fileName: track.trackID,
+                iconName: track.iconName,
+                order: index,
+                volume: track.volume,
+                pan: track.pan,
+                speed: track.speed,
+                bass: track.bass,
+                mid: track.mid,
+                treble: track.treble
+            )
+        }
+    }
+
+    func loadSavedMix(_ mix: SavedMix) {
+        removeAllTracks()
+
+        // Rebuild the mixer from the saved track snapshots. Autoplay is
+        // disabled here so every track can receive its saved settings first.
+        for savedTrack in mix.orderedTracks {
+            let availableTrack = AvailableTrack(
+                name: savedTrack.name,
+                fileName: savedTrack.fileName,
+                iconName: savedTrack.iconName
+            )
+
+            addTrack(
+                availableTrack,
+                shouldAutoplay: false,
+                shouldResetMixTitle: false
+            )
+
+            guard let channel = activeTrack(for: availableTrack) else { continue }
+            channel.apply(savedTrack)
+        }
+
+        // If every saved file is missing or failed to load, do not show a
+        // playing state. The mini player will stay hidden because tracks is empty.
+        guard !tracks.isEmpty else {
+            currentMixTitle = "Current Mix"
+            activeMixID = nil
+            return
+        }
+
+        // Publish the saved remix title before play() so the mini player
+        // appears with the correct title as soon as playback starts.
+        currentMixTitle = mix.title
+        activeMixID = mix.id
+        play()
     }
 }

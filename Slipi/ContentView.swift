@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @Environment(NavigationRouter.self) private var router
@@ -18,4 +19,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environment(NavigationRouter())
+        .modelContainer(for: [SavedMix.self, SavedMixTrack.self], inMemory: true)
 }
