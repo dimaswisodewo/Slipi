@@ -18,7 +18,7 @@ struct MixerContainerView: View {
                 .padding()
             
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 16) {
+                LazyVStack(spacing: 16) {
                     ForEach(availableTracks) { track in
                         MixerTrackRowView(track: track, engine: engine)
                     }
