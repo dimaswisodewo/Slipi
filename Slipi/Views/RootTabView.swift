@@ -13,7 +13,7 @@ struct RootTabView: View {
     var body: some View {
         @Bindable var routerBindable = router
         
-        ZStack {
+        ZStack(alignment: .bottom) {
             ForEach(AppTab.allCases) { tab in
                 NavigationStack(path: $routerBindable.paths[tab] ?? .constant([])) {
                     tabContentView(for: tab)
@@ -22,12 +22,12 @@ struct RootTabView: View {
                 .opacity(router.selectedTab == tab ? 1 : 0)
                 .allowsHitTesting(router.selectedTab == tab)
             }
+            
+            FloatingMiniPlayerView(mixer: mixer)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 0) {
-                FloatingMiniPlayerView(mixer: mixer)
-
                 CustomTabBarView()
             }
             .background(Color.brandBackground.ignoresSafeArea(edges: .bottom))
