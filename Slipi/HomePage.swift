@@ -244,8 +244,68 @@ struct HomePage: View {
     }
  
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Background gradient
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 20) {
+                // MARK: Header
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Image(systemName: "wind.snow")
+                            .font(.system(size: 36, weight: .thin))
+                            .foregroundColor(.white)
+                            .padding(.bottom, 4)
+ 
+                        Text("Good Evening, Dea!")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+ 
+                // MARK: Search Bar
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.white.opacity(0.5))
+                    TextField("", text: $searchText,
+                              prompt: Text("Search weather, nature, binaural...")
+                        .foregroundColor(.white.opacity(0.4))
+                    )
+                    .foregroundColor(.white)
+                    .font(.system(size: 15))
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.white.opacity(0.08))
+                )
+                .padding(.horizontal, 16)
+ 
+                // MARK: Filter Tabs
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(filterTabs, id: \.self) { tab in
+                            FilterTabView(
+                                title: tab,
+                                isSelected: selectedTab == tab
+                            ) {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    selectedTab = tab
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+ 
+                // MARK: Category Sections
+                ForEach(filteredCategories) { category in
+                    CategorySectionView(category: category)
+                }
+            }
+        }
+        .background {
             LinearGradient(
                 colors: [
                     Color(red: 0.25, green: 0.08, blue: 0.02),
@@ -255,71 +315,6 @@ struct HomePage: View {
                 endPoint: .center
             )
             .ignoresSafeArea()
- 
-            VStack(spacing: 0) {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
- 
-                        // MARK: Header
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Image(systemName: "wind.snow")
-                                    .font(.system(size: 36, weight: .thin))
-                                    .foregroundColor(.white)
-                                    .padding(.bottom, 4)
- 
-                                Text("Good Evening, Dea!")
-                                    .font(.system(size: 26, weight: .bold))
-                                    .foregroundColor(.white)
-                            }
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
- 
-                        // MARK: Search Bar
-                        HStack(spacing: 10) {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.white.opacity(0.5))
-                            TextField("", text: $searchText,
-                                      prompt: Text("Search weather, nature, binaural...")
-                                .foregroundColor(.white.opacity(0.4))
-                            )
-                            .foregroundColor(.white)
-                            .font(.system(size: 15))
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(Color.white.opacity(0.08))
-                        )
-                        .padding(.horizontal, 16)
- 
-                        // MARK: Filter Tabs
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(filterTabs, id: \.self) { tab in
-                                    FilterTabView(
-                                        title: tab,
-                                        isSelected: selectedTab == tab
-                                    ) {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            selectedTab = tab
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                        }
- 
-                        // MARK: Category Sections
-                        ForEach(filteredCategories) { category in
-                            CategorySectionView(category: category)
-                        }
-                    }
-                }
-            }
         }
         .preferredColorScheme(.dark)
         .onChange(of: searchText) { _, newValue in

@@ -29,6 +29,7 @@ struct RootTabView: View {
 
                 CustomTabBarView()
             }
+            .background(Color.brandBackground.ignoresSafeArea(edges: .bottom))
         }
         .ignoresSafeArea(.keyboard)
     }
