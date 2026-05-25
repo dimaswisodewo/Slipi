@@ -88,9 +88,11 @@ extension AvailableTrack {
     static let windEars = AvailableTrack(name: "Wind in Ears", fileName: "wind-in-ears", iconName: "wind")
     static let windTrees = AvailableTrack(name: "Wind through Trees", fileName: "wind-through-trees", iconName: "tree")
     static let winterForest = AvailableTrack(name: "Winter Forest", fileName: "winter-forest", iconName: "tree")
+
+    static let walkingOnDryLeaves = AvailableTrack(name: "Walking on Dry Leaves", fileName: "dry-leaves 2", iconName: "figure.walk")
+    static let writing = AvailableTrack(name: "Writing", fileName: "writing", iconName: "pencil.tip")
     static let winter = AvailableTrack(name: "Winter", fileName: "Winter", iconName: "snowflake")
     static let wolfHowls = AvailableTrack(name: "Wolf Howls", fileName: "wolf-howls", iconName: "pawprint")
-    static let writing = AvailableTrack(name: "Writing", fileName: "writing", iconName: "pencil.tip")
 
     static let catalog: [AvailableTrack] = [
         arcticWind, autumnForest, bats, beads, bedSheets,
@@ -105,8 +107,9 @@ extension AvailableTrack {
         sheep, slime, storm, sunnyDay, tapWater, thunderStrike, thunderStorm,
         tinFoil, vinylCrackle, walkingForest, walkingMeltedSnow, walkingLeaves,
         walkingSnow, waterFlowing, waterSlushing, whale, windBlowing, windEars,
-        windTrees, winterForest, winter, wolfHowls, writing
+        windTrees, winterForest, walkingOnDryLeaves, writing, winter, wolfHowls
     ]
+
 
     static func manifestTrack(name: String, fileName: String) -> AvailableTrack {
         AvailableTrack(name: name, fileName: fileName, iconName: "music.note")

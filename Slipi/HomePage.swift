@@ -41,9 +41,11 @@ struct SoundCategory: Identifiable {
 let sampleCategories: [SoundCategory] = [
     SoundCategory(name: "Nature", items: [
         SoundItem(track: .autumnForest),
+        SoundItem(track: .bats),
         SoundItem(track: .birdsChirping),
         SoundItem(track: .bullfrogs),
-        SoundItem(track: .bubblingMagma),
+        SoundItem(track: .bumblebee),
+        SoundItem(track: .catPurring),
         SoundItem(track: .chacalacaBirds),
         SoundItem(track: .chickens),
         SoundItem(track: .cowsMoos),
@@ -55,6 +57,7 @@ let sampleCategories: [SoundCategory] = [
         SoundItem(track: .flamingos),
         SoundItem(track: .frogs),
         SoundItem(track: .harbourSeagulls),
+        SoundItem(track: .horseTrotting),
         SoundItem(track: .morningBirdsong),
         SoundItem(track: .owls),
         SoundItem(track: .peepers),
@@ -69,6 +72,8 @@ let sampleCategories: [SoundCategory] = [
     ]),
     SoundCategory(name: "Weather", items: [
         SoundItem(track: .arcticWind),
+        SoundItem(track: .bubblingMagma),
+        SoundItem(track: .fireCrackle),
         SoundItem(track: .icySnow),
         SoundItem(track: .lightRain),
         SoundItem(track: .rollingThunder),
@@ -89,20 +94,17 @@ let sampleCategories: [SoundCategory] = [
         SoundItem(track: .binaural528),
         SoundItem(track: .binaural639)
     ]),
-    SoundCategory(name: "Ambient & ASMR", items: [
+    SoundCategory(name: "ASMR & Ambient", items: [
         SoundItem(track: .beads),
         SoundItem(track: .bedSheets),
         SoundItem(track: .boilingWater),
         SoundItem(track: .bookPageTurning),
         SoundItem(track: .bubbleWrap),
-        SoundItem(track: .catPurring),
         SoundItem(track: .earCleaning),
         SoundItem(track: .fingerCracker),
-        SoundItem(track: .fireCrackle),
         SoundItem(track: .fizzyDrink),
         SoundItem(track: .foamBath),
         SoundItem(track: .frying),
-        SoundItem(track: .horseTrotting),
         SoundItem(track: .iceCubes),
         SoundItem(track: .iceMelting),
         SoundItem(track: .makeupBrush),
@@ -117,6 +119,7 @@ let sampleCategories: [SoundCategory] = [
         SoundItem(track: .walkingMeltedSnow),
         SoundItem(track: .walkingLeaves),
         SoundItem(track: .walkingSnow),
+        SoundItem(track: .walkingOnDryLeaves),
         SoundItem(track: .waterSlushing),
         SoundItem(track: .writing)
     ])
