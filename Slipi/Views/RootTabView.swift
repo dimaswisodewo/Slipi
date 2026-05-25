@@ -43,15 +43,8 @@ struct RootTabView: View {
         case .favorites:
             FavoritesRemixView()
         case .me:
-            mePlaceholder
+            SettingSleepey()
         }
-    }
-
-    private var mePlaceholder: some View {
-        VStack {
-            Text("Me")
-        }
-        .navigationTitle("Me")
     }
 }
 
