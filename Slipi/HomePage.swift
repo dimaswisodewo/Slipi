@@ -86,38 +86,37 @@ struct SoundCardView: View {
 
     private var content: some View {
         VStack(spacing: 8) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        isActive ?
-                        LinearGradient(
-                            colors: [Color.brandOrange, Color.brandOrangeDark],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ) :
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.1), Color.white.opacity(0.05)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+            RoundedRectangle(cornerRadius: 16)
+                .fill(
+                    isActive ?
+                    LinearGradient(
+                        colors: [Color.brandOrange, Color.brandOrangeDark],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ) :
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.1), Color.white.opacity(0.05)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
-                    .aspectRatio(1, contentMode: .fit)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(isActive ? 0.8 : 0), lineWidth: 2)
-                    )
-                    .shadow(color: isActive ? Color.brandOrange.opacity(0.4) : Color.clear, radius: 8, x: 0, y: 4)
- 
-                Image(systemName: item.icon)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(22)
-                    .foregroundStyle(isActive ? .white : .white.opacity(0.4))
-                    .fontWeight(.light)
-            }
+                )
+                .aspectRatio(1, contentMode: .fit)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(Color.white.opacity(isActive ? 0.8 : 0), lineWidth: 2)
+                )
+                .overlay(
+                    Image(systemName: item.icon)
+                        .resizable()
+                        .scaledToFit()
+                        .padding(22)
+                        .foregroundStyle(isActive ? .white : .white.opacity(0.4))
+                        .fontWeight(.light)
+                )
+                .shadow(color: isActive ? Color.brandOrange.opacity(0.4) : Color.clear, radius: 8, x: 0, y: 4)
  
             Text(item.name)
-                .font(.system(size: 13, weight: isActive ? .medium : .regular))
+                .font(.system(size: 13, weight: .regular))
                 .foregroundStyle(isActive ? .white : .white.opacity(0.6))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
