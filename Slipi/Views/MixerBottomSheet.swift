@@ -13,10 +13,7 @@ struct MixerBottomSheet: View {
     }
 
     private var isTuningPresented: Bool {
-        if case .equalizer = router.presentedSheet {
-            return true
-        }
-        return false
+        router.presentedSheets.count > 1
     }
 
     var body: some View {
