@@ -18,7 +18,7 @@ struct SettingSleepey: View {
     @State private var midGain = 0.0
     @State private var trebleGain = 0.0
     @State private var sleepGoalHours = 8
-    @State private var defaultSleepTimerMinutes = 60
+    @AppStorage(AppStorageKey.defaultSleepTimerMinutes) private var defaultSleepTimerMinutes = 60
     @State private var bedtimeReminderEnabled = true
     @State private var bedtimeReminderTime = Self.defaultBedtimeReminderTime
     @State private var bedtimeReminderDays: Set<Int> = [1, 2, 3, 4, 5]

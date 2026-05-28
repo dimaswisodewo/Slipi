@@ -12,6 +12,7 @@ struct PlayPauseComponent: View {
     var isFavorite = false
     var canToggleFavorite = false
     var onFavoriteToggle: () -> Void = {}
+    var onTimerToggle: () -> Void = {}
 
     var body: some View {
         HStack(spacing: 24) {
@@ -35,7 +36,7 @@ struct PlayPauseComponent: View {
             .buttonStyle(CircleIconButtonStyle(size: 72))
 
             Button {
-
+                onTimerToggle()
             } label: {
                 Image(systemName: "timer")
                     .font(.system(size: 24, weight: .semibold))

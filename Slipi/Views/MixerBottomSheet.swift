@@ -47,7 +47,8 @@ struct MixerBottomSheet: View {
                 mixer: mixer,
                 isFavorite: currentSavedMix != nil,
                 canToggleFavorite: !mixer.tracks.isEmpty,
-                onFavoriteToggle: toggleSavedMix
+                onFavoriteToggle: toggleSavedMix,
+                onTimerToggle: showSleepTimerSheet
             )
             .padding(.bottom, 32)
         }
@@ -90,6 +91,10 @@ struct MixerBottomSheet: View {
         } catch {
             saveErrorMessage = error.localizedDescription
         }
+    }
+    
+    private func showSleepTimerSheet() {
+        router.presentSheet(.timerSheet)
     }
 }
 

@@ -73,6 +73,16 @@ struct FullScreenCoverStackModifier: ViewModifier {
 
 // MARK: - Router View Factory
 
+/// A wrapper view for the sleep timer sheet that connects to persistent storage.
+struct TimerSheetPresentationView: View {
+    @AppStorage(AppStorageKey.defaultSleepTimerMinutes) private var defaultSleepTimerMinutes = 60
+    
+    var body: some View {
+        DefaultSleepTimerSettingsView(defaultSleepTimerMinutes: $defaultSleepTimerMinutes)
+            .presentationBackground(.black)
+    }
+}
+
 /// A factory that maps `AppRoute` cases to their corresponding SwiftUI Views.
 struct AppRouterView {
     /// Handles push-based navigation destinations.
@@ -94,6 +104,8 @@ struct AppRouterView {
             MixerBottomSheet(mixer: MixerEngine.shared)
                 .presentationDetents([.medium, .large])
                 .presentationBackground(.black)
+        case .timerSheet:
+            TimerSheetPresentationView()
         case .equalizer(let track):
             AudioTuning(track: track)
                 .presentationDetents([.medium, .large])

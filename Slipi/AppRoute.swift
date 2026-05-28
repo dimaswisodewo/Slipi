@@ -14,6 +14,8 @@ enum AppRoute: Hashable, Identifiable {
     case mixer
     /// A sheet displaying the mixer controls.
     case mixerSheet
+    /// A sheet displaying the sleep timer.
+    case timerSheet
     /// An equalizer adjustment view for a specific track.
     case equalizer(track: TrackChannel)
     
