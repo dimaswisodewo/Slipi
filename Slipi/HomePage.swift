@@ -368,7 +368,7 @@ struct HomePage: View {
                     CategorySectionView(category: category)
                 }
                 
-                Spacer().frame(height: 90)
+                Spacer().frame(height: 120)
             }
         }
         .background {

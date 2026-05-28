@@ -42,7 +42,6 @@ struct SettingSleepey: View {
                 VStack(spacing: 0) {
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 16) {
-                            header
                             profileCard
 
                             settingsSection(title: "Sound") {
@@ -161,48 +160,19 @@ struct SettingSleepey: View {
 //                                .frame(maxWidth: .infinity)
 //                                .padding(.top, 2)
 //                                .padding(.bottom, 18)
+                            
+                            Spacer().frame(height: 120)
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                         .padding(.bottom, 20)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                    SleepeyTabBar(bottomInset: proxy.safeAreaInsets.bottom)
                 }
                 .ignoresSafeArea(.container, edges: .bottom)
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-    }
-
-    private var header: some View {
-        HStack(spacing: 12) {
-            Button(action: {}) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Palette.textPrimary)
-                    .frame(width: 34, height: 34)
-                    .background(Palette.cardBackground, in: Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Palette.border, lineWidth: 1)
-                    )
-            }
-            .buttonStyle(.plain)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Settings")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(Palette.textPrimary)
-
-                Text("Sleep, sound, and reminders")
-                    .font(.caption)
-                    .foregroundStyle(Palette.textSecondary)
-            }
-
-            Spacer()
-        }
     }
 
     private var profileCard: some View {
@@ -432,7 +402,7 @@ private struct DefaultSleepTimerNavigationRow: View {
     }
 }
 
-private struct DefaultSleepTimerSettingsView: View {
+struct DefaultSleepTimerSettingsView: View {
     @Binding var defaultSleepTimerMinutes: Int
     @Environment(\.dismiss) private var dismiss
     @State private var draftMinutes: Int
@@ -1120,81 +1090,6 @@ struct RowDivider: View {
             .fill(Palette.border)
             .frame(height: 1)
             .padding(.leading, 55)
-    }
-}
-
-private struct SleepeyTabBar: View {
-    let bottomInset: CGFloat
-    @State private var selectedTab: SleepeyTab = .me
-
-    var body: some View {
-        HStack(spacing: 0) {
-            TabBarItem(tab: .home, selectedTab: $selectedTab)
-            TabBarItem(tab: .favorites, selectedTab: $selectedTab)
-            TabBarItem(tab: .me, selectedTab: $selectedTab)
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 14)
-        .padding(.bottom, 18 + bottomInset)
-        .frame(maxWidth: .infinity)
-        .background(
-            UnevenRoundedRectangle(topLeadingRadius: 32, topTrailingRadius: 32)
-                .fill(Palette.tabBackground)
-                .shadow(color: .black.opacity(0.35), radius: 14, x: 0, y: -6)
-        )
-    }
-}
-
-private enum SleepeyTab {
-    case home
-    case favorites
-    case me
-
-    var title: String {
-        switch self {
-        case .home: "Home"
-        case .favorites: "Favorites"
-        case .me: "Me"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .home: "house"
-        case .favorites: "heart"
-        case .me: "person"
-        }
-    }
-}
-
-private struct TabBarItem: View {
-    let tab: SleepeyTab
-    @Binding var selectedTab: SleepeyTab
-
-    private var isSelected: Bool {
-        selectedTab == tab
-    }
-
-    var body: some View {
-        Button {
-            selectedTab = tab
-        } label: {
-            VStack(spacing: 5) {
-                tabIcon
-                Text(tab.title)
-                    .font(.caption.weight(.semibold))
-            }
-            .foregroundStyle(isSelected ? Palette.sauce : Palette.tabInactive)
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-
-    @ViewBuilder
-    private var tabIcon: some View {
-        Image(systemName: isSelected ? "\(tab.icon).fill" : tab.icon)
-            .font(.system(size: 22, weight: .semibold))
     }
 }
 
